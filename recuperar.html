@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Recuperar Senha</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Recuperar Senha</h2>
+    <input type="email" id="recEmail" placeholder="Digite seu Email">
+    <button onclick="enviarEmail()">Recuperar Senha</button>
+    <a href="#" onclick="reenviarEmail()" class="link">Não recebeu? Enviar novamente</a>
+    <a href="index.html" class="link">Lembrei a senha! Fazer login</a>
+
+    <div id="codigoDiv" style="display:none; margin-top:10px;">
+      <input type="text" id="codigo" maxlength="4" placeholder="Código de 4 dígitos">
+      <input type="password" id="novaSenha" placeholder="Nova Senha">
+      <button onclick="definirNovaSenha()">Definir Nova Senha</button>
+    </div>
+    <p id="recMsg" class="msg"></p>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
