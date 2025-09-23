@@ -98,24 +98,63 @@ function reenviarEmail(){
   msg.innerText = "Email reenviado!";
 }
 
-function definirNovaSenha(){
-  let codigo = document.getElementById('codigo').value;
-  let novaSenha = document.getElementById('novaSenha').value;
-  let msg = document.getElementById('recMsg');
+function fazerCadastro() {
+  let nome = document.getElementById('cadNome').value;
+  let email = document.getElementById('cadEmail').value;
+  let telefoneInput = document.getElementById('cadTelefone');
+  let telefone = telefoneInput.value;
+  let senha = document.getElementById('cadSenha').value;
+  let senhaConf = document.getElementById('cadSenhaConf').value;
+  let msg = document.getElementById('cadMsg');
 
-  if (codigo.length !== 4) {
+  if (!nome || !email || !telefone || !senha || !senhaConf) {
     msg.style.color = "red";
-    msg.innerText = "Digite um código válido (4 dígitos).";
+    msg.innerText = "Preencha todos os campos!";
     return;
   }
 
-  if (novaSenha.length < 6) {
+  if (!email.includes('@')) {
     msg.style.color = "red";
-    msg.innerText = "A nova senha deve ter pelo menos 6 caracteres.";
+    msg.innerText = "Digite um email válido.";
+    return;
+  }
+
+  let telefoneNumeros = telefone.replace(/\D/g, "");
+  if (telefoneNumeros.length !== 11) {
+    msg.style.color = "red";
+    msg.innerText = "Telefone deve conter 11 números.";
+    return;
+  }
+  
+  let telefoneFormatado = `(${telefoneNumeros.substring(0,2)})${telefoneNumeros.substring(2)}`;
+  telefoneInput.value = telefoneFormatado;
+
+  if (senha.length < 6) {
+    msg.style.color = "red";
+    msg.innerText = "A senha deve ter pelo menos 6 caracteres.";
+    return;
+  }
+
+  if (senha !== senhaConf) {
+    msg.style.color = "red";
+    msg.innerText = "As senhas não coincidem.";
     return;
   }
 
   msg.style.color = "green";
-  msg.innerText = "Senha redefinida! Voltando ao login...";
+  msg.innerText = "Cadastro realizado com sucesso!";
   setTimeout(()=> window.location.href = "index.html", 2000);
+}
+
+const telefoneInput = document.getElementById('cadTelefone');
+if (telefoneInput) {
+  telefoneInput.addEventListener('input', function(e) {
+    let numeros = this.value.replace(/\D/g, "");
+    if (numeros.length > 11) numeros = numeros.slice(0,11);
+    let formatado = numeros;
+    if (numeros.length > 2) {
+      formatado = `(${numeros.substring(0,2)})${numeros.substring(2)}`;
+    }
+    this.value = formatado;
+  });
 }
