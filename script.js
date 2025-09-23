@@ -1,4 +1,4 @@
-// ---- LOGIN ----
+
 function fazerLogin() {
   let email = document.getElementById('loginEmail').value;
   let senha = document.getElementById('loginSenha').value;
@@ -27,7 +27,7 @@ function fazerLogin() {
   setTimeout(()=> window.location.href = "inicial_notadez.html", 2000);
 }
 
-// ---- CADASTRO ----
+
 function fazerCadastro() {
   let nome = document.getElementById('cadNome').value;
   let email = document.getElementById('cadEmail').value;
@@ -48,6 +48,14 @@ function fazerCadastro() {
     return;
   }
 
+
+  let telefoneRegex = /^\(\d{2}\)\d{9}$/;
+  if (!telefoneRegex.test(telefone)) {
+    msg.style.color = "red";
+    msg.innerText = "Telefone inválido. Use o formato (DD)999999999.";
+    return;
+  }
+
   if (senha.length < 6) {
     msg.style.color = "red";
     msg.innerText = "A senha deve ter pelo menos 6 caracteres.";
@@ -65,7 +73,7 @@ function fazerCadastro() {
   setTimeout(()=> window.location.href = "index.html", 2000);
 }
 
-// ---- RECUPERAÇÃO ----
+
 function enviarEmail() {
   let email = document.getElementById('recEmail').value;
   let msg = document.getElementById('recMsg');
