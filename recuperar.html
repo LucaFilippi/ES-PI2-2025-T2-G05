@@ -3,9 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <title>Recuperar Senha</title>
+  <link rel="icon" type="image/png" href="logo_notadez.png">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <header>
+    <img src="logo_notadez.png" alt="NotaDez" class="logo">
+  </header>
   <div class="container">
     <h2>Recuperar Senha</h2>
     <input type="email" id="recEmail" placeholder="Digite seu Email">
@@ -15,7 +19,7 @@
 
     <div id="codigoDiv" style="display:none; margin-top:10px;">
       <input type="text" id="codigo" maxlength="4" placeholder="Código de 4 dígitos">
-      <input type="password" id="novaSenha" placeholder="Nova Senha">
+      <input type="password" id="novaSenha" placeholder="Nova Senha (mínimo 6 caracteres)">
       <button onclick="definirNovaSenha()">Definir Nova Senha</button>
     </div>
     <p id="recMsg" class="msg"></p>

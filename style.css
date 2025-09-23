@@ -1,10 +1,23 @@
 body {
   font-family: Arial, sans-serif;
   background: #f5f6fa;
+  min-height: 100vh;
+  margin: 0;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  height: 100vh;
+  justify-content: flex-start;
+}
+
+header {
+  background: #4a69bd;
+  padding: 10px;
+  text-align: center;
+  width: 100%;
+}
+
+.logo {
+  max-height: 110px;
 }
 
 .container {
@@ -12,18 +25,26 @@ body {
   padding: 20px 30px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0,0,0,0.15);
-  width: 320px;
+  width: 340px;
+  max-width: 95vw;
   text-align: center;
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 h2 { margin-bottom: 15px; color: #2f3640; }
 
 input {
   width: 100%;
+  max-width: 280px;
+  box-sizing: border-box;
   padding: 10px;
   margin: 8px 0;
   border: 1px solid #ccc;
   border-radius: 6px;
+  display: block;
 }
 
 button {
@@ -32,9 +53,11 @@ button {
   border: none;
   padding: 10px;
   width: 100%;
+  max-width: 280px;
   margin-top: 10px;
   border-radius: 6px;
   cursor: pointer;
+  display: block;
 }
 
 button:hover { background: #192a56; }
@@ -51,5 +74,19 @@ button:hover { background: #192a56; }
 .msg {
   margin-top: 10px;
   font-weight: bold;
-  color: green;
+}
+
+.loader {
+  margin: 20px auto;
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #273c75;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
