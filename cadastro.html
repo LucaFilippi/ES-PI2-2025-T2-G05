@@ -3,14 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <title>Cadastro</title>
+  <link rel="icon" type="image/png" href="logo_notadez.png">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <header>
+    <img src="logo_notadez.png" alt="NotaDez" class="logo">
+  </header>
   <div class="container">
     <h2>Cadastro</h2>
+    <input type="text" id="cadNome" placeholder="Nome completo">
     <input type="email" id="cadEmail" placeholder="Email">
-    <input type="email" id="cadEmailConf" placeholder="Confirmar Email">
-    <input type="password" id="cadSenha" placeholder="Senha">
+    <input type="tel" id="cadTelefone" placeholder="Telefone">
+    <input type="password" id="cadSenha" placeholder="Senha (mínimo 6 caracteres)">
     <input type="password" id="cadSenhaConf" placeholder="Confirmar Senha">
     <button onclick="fazerCadastro()">Cadastrar</button>
     <a href="index.html" class="link">Já tem cadastro? Fazer login</a>
