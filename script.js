@@ -24,7 +24,10 @@ function fazerLogin() {
 
   msg.style.color = "green";
   msg.innerText = "Login efetuado com sucesso!";
-  setTimeout(()=> window.location.href = "inicial_notadez.html", 2000);
+  // set current user and log
+  try { localStorage.setItem('currentUser', email); } catch(e){}
+  if (window.addLog) window.addLog(`fez login`);
+  setTimeout(()=> window.location.href = "loading.html", 2000);
 }
 
 
@@ -70,6 +73,8 @@ function fazerCadastro() {
 
   msg.style.color = "green";
   msg.innerText = "Cadastro realizado com sucesso!";
+  // log registration
+  if (window.addLog) window.addLog(`criou a conta ${email}`);
   setTimeout(()=> window.location.href = "index.html", 2000);
 }
 
@@ -90,12 +95,37 @@ function enviarEmail() {
   msg.style.color = "green";
   msg.innerText = "Email de recuperação enviado!";
   document.getElementById('codigoDiv').style.display = "block";
+  if (window.addLog) window.addLog(`solicitou recuperação de senha para ${email}`);
 }
 
 function reenviarEmail(){
   let msg = document.getElementById('recMsg');
   msg.style.color = "green";
   msg.innerText = "Email reenviado!";
+  const email = document.getElementById('recEmail') ? document.getElementById('recEmail').value : '';
+  if (window.addLog) window.addLog(`reenviou email de recuperação para ${email}`);
+}
+
+function definirNovaSenha(){
+  const codigo = document.getElementById('codigo').value;
+  const novaSenha = document.getElementById('novaSenha').value;
+  const msg = document.getElementById('recMsg');
+  if (!codigo || !novaSenha) {
+    msg.style.color = 'red';
+    msg.innerText = 'Preencha código e nova senha.';
+    return;
+  }
+  if (novaSenha.length < 6) {
+    msg.style.color = 'red';
+    msg.innerText = 'A nova senha deve ter pelo menos 6 caracteres.';
+    return;
+  }
+  msg.style.color = 'green';
+  msg.innerText = 'Senha alterada com sucesso!';
+  const email = document.getElementById('recEmail') ? document.getElementById('recEmail').value : '';
+  if (window.addLog) window.addLog(`definiu nova senha para ${email}`);
+  // hide code input
+  document.getElementById('codigoDiv').style.display = 'none';
 }
 
 function fazerCadastro() {
