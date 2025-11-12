@@ -17,9 +17,6 @@
 
     <select id="turmaSelect">
       <option value="">Selecione a Turma</option>
-      <option value="T1">Turma 1</option>
-      <option value="T2">Turma 2</option>
-      <option value="T3">Turma 3</option>
     </select>
 
     <input type="text" id="matricula" placeholder="Matrícula">
@@ -31,6 +28,10 @@
     <button id="importarBtn">Importar CSV</button>
 
     <button id="addColunaBtn" style="margin-top: 15px; background:#44bd32;">+ Adicionar Coluna</button>
+
+  <button id="toggleNotasGeraisBtn" style="margin-top: 15px; background:#2980b9; color:white; margin-left:8px;">Lançar/Editar Notas (geral)</button>
+  <button id="saveNotasBtn" style="margin-top: 15px; background:#27ae60; color:white; margin-left:8px; display:none;">Salvar Notas</button>
+  <button id="cancelNotasBtn" style="margin-top: 15px; background:#c0392b; color:white; margin-left:8px; display:none;">Cancelar</button>
 
     <table id="alunosTable" border="1" style="margin-top:20px; width:100%; border-collapse:collapse;">
       <thead>

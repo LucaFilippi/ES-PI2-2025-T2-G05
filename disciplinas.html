@@ -31,4 +31,25 @@
   </div>
 </body>
   <a href="logs.html" class="log-button">Logs</a>
+  <script>
+    // fallback navigation: garantir que cliques nos cards vão para turmas.html
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('disciplinasContainer');
+      if (!container) return;
+      container.addEventListener('click', (e) => {
+        // ignorar cliques nos botões de editar/excluir
+        if (e.target.closest('.btn-edit') || e.target.closest('.btn-delete')) return;
+        // encontrar o card clicado (filho direto do container)
+        let el = e.target;
+        while (el && el !== container && el.parentElement !== container) el = el.parentElement;
+        if (!el || el === container) return;
+        const cards = Array.from(container.children);
+        const idx = cards.indexOf(el);
+        if (idx >= 0) {
+          localStorage.setItem('disciplinaSelecionada', idx);
+          window.location.href = 'turmas.html';
+        }
+      });
+    });
+  </script>
 </html>

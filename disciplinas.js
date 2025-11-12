@@ -24,7 +24,7 @@ function renderDisciplinas() {
       </div>
     `;
     // abrir ao clicar no card (exceto nos botões)
-    card.onclick = () => abrirAlunos(idx);
+  card.onclick = () => abrirTurmas(idx);
     // prevenir propagação dos cliques nos botões
     const btnEdit = card.querySelector('.btn-edit');
     const btnDelete = card.querySelector('.btn-delete');
@@ -52,9 +52,9 @@ function adicionarDisciplina() {
   document.getElementById("codigoDisciplina").value = "";
 }
 
-function abrirAlunos(idx) {
+function abrirTurmas(idx) {
   localStorage.setItem("disciplinaSelecionada", idx);
-  window.location.href = "alunos.html";
+  window.location.href = "turmas.html";
 }
 
 function editarDisciplina(idx) {
