@@ -36,14 +36,23 @@ function renderAlunos() {
   }
   title && (title.innerText = `Alunos — ${disciplina.nome}`);
 
-  // popular select de turmas
-  const turmaSelect = document.getElementById('turmaSelect');
-  turmaSelect.innerHTML = '<option value="">Selecione a Turma</option>';
-  disciplina.turmas.forEach(t => {
-    const opt = document.createElement('option'); opt.value = t.id; opt.innerText = t.nome; turmaSelect.appendChild(opt);
-  });
-  // manter seleção atual
-  if (turmaSelecionadaId) turmaSelect.value = turmaSelecionadaId;
+  // exibir turma selecionada no topo
+  let nomeTurma = '—';
+  if (turmaSelecionadaId) {
+    const turmaObj = disciplina.turmas.find(t => t.id === turmaSelecionadaId);
+    if (turmaObj) nomeTurma = turmaObj.nome;
+  }
+  const turmaTituloEl = document.getElementById('turmaTitulo');
+  if (turmaTituloEl) turmaTituloEl.innerText = `Turma selecionada: ${nomeTurma}`;
+
+  // se nenhuma turma foi selecionada, avisar
+  if (!turmaSelecionadaId) {
+    document.querySelector('#alunosTable tbody').innerHTML = '';
+    const msg = document.getElementById('msg');
+    msg.innerText = 'Selecione uma turma na página anterior para visualizar alunos.';
+    msg.style.color = 'orange';
+    return;
+  }
 
   const tbody = document.querySelector('#alunosTable tbody');
   tbody.innerHTML = '';
@@ -65,7 +74,7 @@ function renderAlunos() {
   const thAcoes = document.createElement('th'); thAcoes.innerText = 'Ações'; theadRow.appendChild(thAcoes);
 
   // filtrar alunos da turma selecionada (se houver)
-  const alunosFiltrados = turmaSelecionadaId ? disciplina.alunos.filter(a => (a.turma === turmaSelecionadaId || a.turma === (disciplina.turmas.find(t=>t.id===turmaSelecionadaId)||{}).nome)) : disciplina.alunos;
+  const alunosFiltrados = turmaSelecionadaId ? disciplina.alunos.filter(a => a.turma === turmaSelecionadaId) : disciplina.alunos;
 
   alunosFiltrados.forEach((aluno, idx) => {
     const tr = document.createElement('tr');
@@ -80,12 +89,28 @@ function renderAlunos() {
         const val = (aluno.notas.hasOwnProperty(av.id)) ? aluno.notas[av.id] : 0;
         if (notasModoGeral) {
           const input = document.createElement('input');
-          input.type = 'number'; input.step = '0.01'; input.min = '0'; input.max = '100';
+          input.type = 'number'; input.step = '0.01'; input.min = '0'; input.max = '10';
           input.value = val;
           input.style.width = '80px';
           input.addEventListener('change', (e) => {
-            const n = parseFloat(e.target.value);
-            aluno.notas[av.id] = isNaN(n) ? 0 : n;
+            let n = parseFloat(e.target.value);
+            // validar: entre 0 e 10, máx 2 casas decimais
+            if (isNaN(n)) n = 0;
+            if (n < 0) n = 0;
+            if (n > 10) n = 10;
+            // limitar a 2 casas decimais
+            n = Math.round(n * 100) / 100;
+            e.target.value = n;
+            aluno.notas[av.id] = n;
+          });
+          input.addEventListener('blur', (e) => {
+            let n = parseFloat(e.target.value);
+            if (isNaN(n)) n = 0;
+            if (n < 0) n = 0;
+            if (n > 10) n = 10;
+            n = Math.round(n * 100) / 100;
+            e.target.value = n;
+            aluno.notas[av.id] = n;
           });
           td.appendChild(input);
         } else {
@@ -137,21 +162,27 @@ function renderAlunos() {
 
 function adicionarAluno() {
   if (!ensureDisciplineStructure()) return;
+  if (!turmaSelecionadaId) return alert('Nenhuma turma selecionada. Volte e selecione uma turma.');
   const matricula = document.getElementById('matricula').value.trim();
   const nome = document.getElementById('nome').value.trim();
-  const turma = document.getElementById('turmaSelect').value;
   if (!matricula || !nome) {
     document.getElementById('msg').innerText = 'Matrícula e nome são obrigatórios.';
     document.getElementById('msg').style.color = 'red';
     return;
   }
-  const aluno = { matricula, nome, turma, extras: {}, notas: {} };
+  const aluno = { matricula, nome, turma: turmaSelecionadaId, extras: {}, notas: {} };
   // initialize notas for existing avaliacoes in that turma
-  const turmaObj = disciplina.turmas.find(t=>t.id === turma || t.nome === turma);
+  const turmaObj = disciplina.turmas.find(t=>t.id === turmaSelecionadaId);
   if (turmaObj && Array.isArray(turmaObj.avaliacoes)) {
     turmaObj.avaliacoes.forEach(av => { aluno.notas[av.id] = 0; });
   }
   disciplina.alunos.push(aluno);
+  // ordenar alfabeticamente por nome
+  disciplina.alunos.sort((a, b) => {
+    const nomeA = (a.nome || '').toLowerCase();
+    const nomeB = (b.nome || '').toLowerCase();
+    return nomeA.localeCompare(nomeB);
+  });
   instituicoes[instituicaoIndex].disciplinas[disciplinaIndex] = disciplina;
   saveAll();
   renderAlunos();
@@ -175,6 +206,12 @@ function editarAluno(idx) {
   aluno.matricula = novaMat.trim() || aluno.matricula;
   aluno.turma = novaTurma.trim() || aluno.turma;
   instituicoes[instituicaoIndex].disciplinas[disciplinaIndex] = disciplina;
+  // reordenar alfabeticamente após edição
+  disciplina.alunos.sort((a, b) => {
+    const nomeA = (a.nome || '').toLowerCase();
+    const nomeB = (b.nome || '').toLowerCase();
+    return nomeA.localeCompare(nomeB);
+  });
   saveAll();
   renderAlunos();
   if (window.addLog) window.addLog(`alterou o aluno ${old.nome} (${old.matricula}) para ${aluno.nome} (${aluno.matricula}) na disciplina ${disciplina.nome}`);
@@ -282,57 +319,167 @@ function importarCSVFile(file) {
 
 function importarCSV(text) {
   if (!ensureDisciplineStructure()) return;
-  // simple CSV parser: first line headers, comma separated
-  const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length>0);
-  if (lines.length === 0) return alert('CSV vazio');
-  const headers = lines[0].split(',').map(h=>h.trim());
-  const idxMat = headers.findIndex(h => /matricul/i.test(h));
-  const idxNome = headers.findIndex(h => /nome/i.test(h));
-  const idxTurma = headers.findIndex(h => /turm/i.test(h));
-  // treat other headers as extras; ensure discipline has these columns
-  const extrasHeaders = headers.filter((h,i)=> i!==idxMat && i!==idxNome && i!==idxTurma);
-  extrasHeaders.forEach(h => { if (!disciplina.colunas.includes(h)) disciplina.colunas.push(h); });
-
-  for (let i=1;i<lines.length;i++){
-    const row = lines[i].split(',').map(c=>c.trim());
-    const matricula = (idxMat>=0)? row[idxMat] || '' : '';
-    const nome = (idxNome>=0)? row[idxNome] || '' : (row[0]||'');
-    const turma = (idxTurma>=0)? row[idxTurma] || '' : '';
-    const aluno = { matricula, nome, turma, extras: {} };
-    disciplina.colunas.forEach(col => { aluno.extras[col] = ''; });
-    // fill extras from row
-    extrasHeaders.forEach(h => {
-      const j = headers.indexOf(h);
-      aluno.extras[h] = row[j] || '';
-    });
-    disciplina.alunos.push(aluno);
-    if (window.addLog) window.addLog(`importou aluno ${nome} (${matricula}) via CSV para a disciplina ${disciplina.nome}`);
+  if (!turmaSelecionadaId) {
+    alert('Nenhuma turma selecionada. Volte para a página de turmas e selecione uma turma antes de importar.');
+    return;
   }
+  
+  // Verificar se a turma selecionada realmente existe
+  const turmaObj = disciplina.turmas.find(t => t.id === turmaSelecionadaId);
+  if (!turmaObj) {
+    alert('Turma selecionada não encontrada. Selecione uma turma válida.');
+    return;
+  }
+
+  const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+  if (lines.length === 0) return alert('CSV vazio');
+  
+  let importados = 0;
+  let duplicatas = 0;
+  let errors = 0;
+  
+  // Processar cada linha
+  for (let i = 0; i < lines.length; i++) {
+    const row = lines[i].split(',').map(c => c.trim());
+    if (row.length < 2) {
+      errors++;
+      continue;
+    }
+    
+    const matricula = row[0] || '';
+    const nome = row[1] || '';
+    
+    // SEMPRE usar a turma selecionada, ignorar qualquer turma no CSV
+    const turma = turmaSelecionadaId;
+    
+    if (!matricula || !nome) {
+      errors++;
+      continue;
+    }
+    
+    // Verificar duplicata por matrícula (na disciplina inteira ou apenas na turma)
+    const alunoDuplicado = disciplina.alunos.find(a => 
+      a.matricula === matricula && a.turma === turmaSelecionadaId
+    );
+    
+    if (alunoDuplicado) {
+      duplicatas++;
+      if (window.addLog) window.addLog(`evitou importar aluno com matrícula duplicada na mesma turma: ${matricula}`);
+      continue;
+    }
+    
+    const aluno = { 
+      matricula, 
+      nome, 
+      turma: turmaSelecionadaId, // Usar APENAS o ID da turma selecionada
+      extras: {}, 
+      notas: {} 
+    };
+    
+    // Inicializar notas para as avaliações da turma selecionada
+    if (turmaObj && Array.isArray(turmaObj.avaliacoes)) {
+      turmaObj.avaliacoes.forEach(av => { 
+        aluno.notas[av.id] = 0; 
+      });
+    }
+    
+    disciplina.alunos.push(aluno);
+    importados++;
+    
+    if (window.addLog) window.addLog(`importou aluno ${nome} (${matricula}) via CSV para a turma ${turmaObj.nome} na disciplina ${disciplina.nome}`);
+  }
+  
+  // Ordenar alunos alfabeticamente por nome
+  disciplina.alunos.sort((a, b) => {
+    const nomeA = (a.nome || '').toLowerCase();
+    const nomeB = (b.nome || '').toLowerCase();
+    return nomeA.localeCompare(nomeB);
+  });
+  
   instituicoes[instituicaoIndex].disciplinas[disciplinaIndex] = disciplina;
   saveAll();
   renderAlunos();
-  document.getElementById('msg').innerText = 'CSV importado.'; document.getElementById('msg').style.color='green';
+  
+  let msgFinal = `CSV importado: ${importados} aluno(s) adicionado(s) à turma ${turmaObj.nome}`;
+  if (duplicatas > 0) msgFinal += `, ${duplicatas} duplicata(s) evitada(s)`;
+  if (errors > 0) msgFinal += `, ${errors} linha(s) com erro`;
+  
+  document.getElementById('msg').innerText = msgFinal; 
+  document.getElementById('msg').style.color = importados > 0 ? 'green' : 'orange';
+}
+
+// Exportar tabela de alunos (com notas e média final) para CSV
+function exportarTabelaCSV() {
+  if (!ensureDisciplineStructure()) return;
+  if (!turmaSelecionadaId) return alert('Selecione uma turma antes de exportar.');
+  
+  const turma = disciplina.turmas.find(t=>t.id === turmaSelecionadaId);
+  if (!turma) return alert('Turma não encontrada.');
+  
+  // cabeçalhos: matrícula, nome, turma, avaliações, média final
+  const headers = ['Matrícula', 'Nome', 'Turma'];
+  const avaliacoes = Array.isArray(turma.avaliacoes) ? turma.avaliacoes : [];
+  avaliacoes.forEach(av => headers.push(av.nome));
+  headers.push('Média Final');
+  
+  // filtrar alunos da turma selecionada
+  const alunosFiltrados = disciplina.alunos.filter(a => a.turma === turmaSelecionadaId);
+  
+  // construir linhas
+  const linhas = [headers.map(h => `"${h}"`).join(',')];
+  
+  alunosFiltrados.forEach(aluno => {
+    const row = [
+      `"${aluno.matricula || ''}"`,
+      `"${aluno.nome || ''}"`,
+      `"${aluno.turma || ''}"`
+    ];
+    
+    // adicionar notas para cada avaliação
+    let somaFinal = 0;
+    avaliacoes.forEach(av => {
+      aluno.notas = aluno.notas || {};
+      const nota = aluno.notas.hasOwnProperty(av.id) ? aluno.notas[av.id] : 0;
+      row.push(String(nota));
+      somaFinal += (Number(av.percentual||0) * Number(nota || 0)) / 100;
+    });
+    
+    // adicionar média final
+    row.push(String(somaFinal.toFixed(2)));
+    
+    linhas.push(row.join(','));
+  });
+  
+  // criar e descarregar arquivo
+  const csv = linhas.join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  
+  const nomeArquivo = `${disciplina.nome}_${turma.nome}_${new Date().toISOString().split('T')[0]}.csv`;
+  link.setAttribute('href', url);
+  link.setAttribute('download', nomeArquivo);
+  link.style.visibility = 'hidden';
+  
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  if (window.addLog) window.addLog(`exportou tabela de alunos para CSV (turma: ${turma.nome})`);
 }
 
 // wire UI
 document.addEventListener('DOMContentLoaded', () => {
   // se uma turma foi escolhida na página de Turmas, pré-selecionar aqui
   turmaSelecionadaId = localStorage.getItem('turmaSelecionada') || '';
-  if (turmaSelecionadaId) {
-    // limpar após leitura para não afetar navegações futuras
-    localStorage.removeItem('turmaSelecionada');
-  }
+  // NÃO remover a chave — deixar persistida para uso na página
   document.getElementById('addAlunoBtn').addEventListener('click', adicionarAluno);
-  document.getElementById('addColunaBtn').addEventListener('click', adicionarColuna);
   document.getElementById('importarBtn').addEventListener('click', () => {
     const f = document.getElementById('csvFile').files[0];
     if (!f) return alert('Selecione um arquivo CSV.');
     importarCSVFile(f);
   });
-  document.getElementById('turmaSelect').addEventListener('change', (e)=>{
-    turmaSelecionadaId = e.target.value;
-    renderAlunos();
-  });
+  document.getElementById('exportarBtn').addEventListener('click', exportarTabelaCSV);
   // global notes edit buttons
   const tBtn = document.getElementById('toggleNotasGeraisBtn');
   const sBtn = document.getElementById('saveNotasBtn');

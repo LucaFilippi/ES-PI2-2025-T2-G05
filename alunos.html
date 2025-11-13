@@ -14,10 +14,7 @@
 
   <div class="container">
     <h2>Cadastro de Alunos</h2>
-
-    <select id="turmaSelect">
-      <option value="">Selecione a Turma</option>
-    </select>
+    <p id="turmaTitulo" style="font-size: 14px; color: #7f8c8d; margin-top: -10px; margin-bottom: 15px;">Turma selecionada: —</p>
 
     <input type="text" id="matricula" placeholder="Matrícula">
     <input type="text" id="nome" placeholder="Nome do Aluno">
@@ -26,8 +23,8 @@
 
     <input type="file" id="csvFile" accept=".csv" style="margin-top: 15px;">
     <button id="importarBtn">Importar CSV</button>
-
-    <button id="addColunaBtn" style="margin-top: 15px; background:#44bd32;">+ Adicionar Coluna</button>
+    <button id="exportarBtn" style="margin-top: 15px; background:#f39c12; color:white; margin-left:8px;">Exportar para CSV</button>
+    <button onclick="window.location.href='turmas.html'" style="margin-top: 15px; background:#718093; color:white; margin-left:8px;">Voltar para Turmas</button>
 
   <button id="toggleNotasGeraisBtn" style="margin-top: 15px; background:#2980b9; color:white; margin-left:8px;">Lançar/Editar Notas (geral)</button>
   <button id="saveNotasBtn" style="margin-top: 15px; background:#27ae60; color:white; margin-left:8px; display:none;">Salvar Notas</button>
