@@ -1,0 +1,28 @@
+<!-- Autor: Luca Filippi -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Instituições - NotaDez</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="logs.js"></script>
+  <script defer src="instituicoes.js"></script>
+</head>
+<body>
+  <header>
+    <h1 style="color:white;">Minhas Instituições</h1>
+  </header>
+
+  <div class="container" style="width:90%; max-width:800px;">
+    <h2>Instituições</h2>
+    <div id="instituicoesContainer" style="display:flex; flex-wrap:wrap; gap:15px; justify-content:center;"></div>
+
+    <h3 style="margin-top:30px;">Adicionar nova instituição</h3>
+    <input type="text" id="nomeInstituicao" placeholder="Nome da instituição">
+    <label for="corInstituicao">Cor de identificação:</label>
+    <input type="color" id="corInstituicao" value="#4a69bd">
+    <button onclick="adicionarInstituicao()">Adicionar</button>
+  </div>
+  <a href="logs.html" class="log-button">Logs</a>
+</body>
+</html>
