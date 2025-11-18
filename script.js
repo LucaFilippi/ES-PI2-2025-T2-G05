@@ -1,5 +1,5 @@
 
-function fazerLogin() {
+async function fazerLogin() {
   let email = document.getElementById('loginEmail').value;
   let senha = document.getElementById('loginSenha').value;
   let msg = document.getElementById('loginMsg');
@@ -22,16 +22,43 @@ function fazerLogin() {
     return;
   }
 
-  msg.style.color = "green";
-  msg.innerText = "Login efetuado com sucesso!";
-  // set current user and log
-  try { localStorage.setItem('currentUser', email); } catch(e){}
-  if (window.addLog) window.addLog(`fez login`);
-  setTimeout(()=> window.location.href = "loading.html", 2000);
+  try {
+    const response = await fetch('http://localhost:3000/api/users/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email, senha })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      msg.style.color = "red";
+      msg.innerText = "Email ou senha inválidos!";
+      return;
+    }
+
+    // Login bem-sucedido
+    msg.style.color = "green";
+    msg.innerText = "Login efetuado com sucesso!";
+    
+    // Salvar dados no localStorage
+    localStorage.setItem('currentUser', email);
+    localStorage.setItem('userId', data.id);
+    localStorage.setItem('userName', data.nome);
+    
+    if (window.addLog) window.addLog(`fez login`);
+    setTimeout(() => window.location.href = "loading.html", 2000);
+  } catch (err) {
+    console.error('Erro ao fazer login:', err);
+    msg.style.color = "red";
+    msg.innerText = "Erro ao conectar com o servidor!";
+  }
 }
 
 
-function fazerCadastro() {
+async function fazerCadastro() {
   let nome = document.getElementById('cadNome').value;
   let email = document.getElementById('cadEmail').value;
   let telefone = document.getElementById('cadTelefone').value;
@@ -50,7 +77,6 @@ function fazerCadastro() {
     msg.innerText = "Digite um email válido.";
     return;
   }
-
 
   let telefoneRegex = /^\(\d{2}\)\d{9}$/;
   if (!telefoneRegex.test(telefone)) {
@@ -71,11 +97,33 @@ function fazerCadastro() {
     return;
   }
 
-  msg.style.color = "green";
-  msg.innerText = "Cadastro realizado com sucesso!";
-  // log registration
-  if (window.addLog) window.addLog(`criou a conta ${email}`);
-  setTimeout(()=> window.location.href = "index.html", 2000);
+  try {
+    const response = await fetch('http://localhost:3000/api/users/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ nome, email, telefone, senha })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      msg.style.color = "red";
+      msg.innerText = data.error || "Erro ao cadastrar!";
+      return;
+    }
+
+    // Cadastro bem-sucedido
+    msg.style.color = "green";
+    msg.innerText = "Cadastro realizado com sucesso!";
+    if (window.addLog) window.addLog(`criou a conta ${email}`);
+    setTimeout(() => window.location.href = "index.html", 2000);
+  } catch (err) {
+    console.error('Erro ao cadastrar:', err);
+    msg.style.color = "red";
+    msg.innerText = "Erro ao conectar com o servidor!";
+  }
 }
 
 
