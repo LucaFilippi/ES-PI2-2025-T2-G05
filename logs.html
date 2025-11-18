@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Logs - NotaDez</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="logs.js"></script>
+  <style>
+    body { background: #000; color: #fff; }
+    .logs-wrapper { max-width: 900px; margin: 30px auto; padding: 20px; }
+    .logs-header { display:flex; justify-content:space-between; align-items:center; }
+    .logs-container { margin-top:20px; white-space:pre-wrap; }
+    .close-link { color:#fff; text-decoration:underline; }
+  </style>
+</head>
+<body>
+  <div class="logs-wrapper">
+    <div class="logs-header">
+      <h2 style="margin:0; color:white;">Logs de Ações</h2>
+      <div>
+        <a href="instituicoes.html" class="close-link">Voltar</a>
+      </div>
+    </div>
+    <div id="logsContainer" class="logs-container"></div>
+  </div>
+
+  <script>
+    // render initially and every 2s for live updates
+    function update(){ window.renderLogs && window.renderLogs('logsContainer'); }
+    update();
+    setInterval(update, 2000);
+
+    // send logs to server (placeholder URL) — backend should provide the real endpoint
+    const sendBtn = document.getElementById('sendLogsBtn');
+    sendBtn.addEventListener('click', async () => {
+      const url = prompt('Informe a URL do endpoint de logs (ex: https://seusite.com/api/logs)');
+      if (!url) return alert('Operação cancelada.');
+      sendBtn.disabled = true;
+      sendBtn.innerText = 'Enviando...';
+      const res = await window.sendLogsToServer(url);
+      if (res && res.ok) alert('Logs enviados: ' + res.sent);
+      else alert('Falha ao enviar logs. Veja console para detalhes.');
+      sendBtn.disabled = false;
+      sendBtn.innerText = 'Enviar ao servidor';
+    });
+  </script>
+</body>
+</html>

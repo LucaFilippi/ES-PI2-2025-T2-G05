@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <link rel="icon" type="image/png" href="logo_notadez.png">
+  <link rel="stylesheet" href="style.css">
+  <script src="logs.js"></script>
+  <script>window.API_BASE = 'http://localhost:3000';</script>
+</head>
+<body>
+  <header>
+    <img src="logo_notadez.png" alt="NotaDez" class="logo">
+  </header>
+  <div class="container">
+    <h2>Login</h2>
+    <input type="email" id="loginEmail" placeholder="Email">
+    <input type="password" id="loginSenha" placeholder="Senha (mínimo 6 caracteres)">
+    <button onclick="fazerLogin()">Entrar</button>
+    <a href="cadastro.html" class="link">Ainda não tem cadastro? Cadastrar-se</a>
+    <a href="recuperar.html" class="link">Esqueceu a senha?</a>
+    <p id="loginMsg" class="msg"></p>
+  </div>
+  <script src="script.js"></script>
+  <a href="logs.html" class="log-button">Logs</a>
+</body>
+</html>

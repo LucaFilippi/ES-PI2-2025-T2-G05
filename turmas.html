@@ -1,0 +1,34 @@
+<!-- Página de Turmas - permite criar turmas e gerenciar métodos de avaliação -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Turmas - NotaDez</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="logs.js"></script>
+  <script defer src="turmas.js"></script>
+</head>
+<body>
+  <header>
+    <h1 style="color:white;">Turmas</h1>
+  </header>
+
+  <div class="container" style="width:90%; max-width:900px;">
+    <h2 id="disciplinaTitulo">Disciplina</h2>
+
+    <div style="margin-bottom:12px; display:flex; gap:8px; align-items:center;">
+      <input type="text" id="nomeTurmaInput" placeholder="Nome da nova turma">
+      <button id="criarTurmaBtn">Criar Turma</button>
+      <button onclick="location.href='disciplinas.html'" style="margin-left:12px;">Voltar às Disciplinas</button>
+    </div>
+
+    <div id="turmasContainer" style="display:flex; gap:12px; flex-wrap:wrap;"></div>
+
+    <hr style="margin-top:20px;">
+
+    <div id="detalheTurmaArea"></div>
+  </div>
+
+  <a href="logs.html" class="log-button">Logs</a>
+</body>
+</html>
