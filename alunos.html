@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -9,33 +8,37 @@
 </head>
 <body>
   <header>
-    <img src="logo.png" alt="Logo da Instituição" class="logo">
+    <h1 style="color:white;">Cadastro de Alunos</h1>
   </header>
 
   <div class="container">
-    <h2>Cadastro de Alunos</h2>
+    <h2>Gerenciamento de Alunos</h2>
     <p id="turmaTitulo" style="font-size: 14px; color: #7f8c8d; margin-top: -10px; margin-bottom: 15px;">Turma selecionada: —</p>
 
-    <input type="text" id="matricula" placeholder="Matrícula">
-    <input type="text" id="nome" placeholder="Nome do Aluno">
+    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px;">
+      <input type="text" id="matricula" placeholder="Matrícula" style="flex: 1; min-width: 200px;">
+      <input type="text" id="nome" placeholder="Nome do Aluno" style="flex: 1; min-width: 200px;">
+      <button id="addAlunoBtn" style="flex: 0 0 auto; min-width: 150px;">Adicionar Aluno</button>
+    </div>
 
-    <button id="addAlunoBtn">Adicionar Aluno</button>
+    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px;">
+      <input type="file" id="csvFile" accept=".csv" style="flex: 1; min-width: 200px;">
+      <button id="importarBtn" style="flex: 0 0 auto; min-width: 140px;">Importar CSV</button>
+      <button id="exportarBtn" style="flex: 0 0 auto; min-width: 140px; background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);">Exportar CSV</button>
+    </div>
 
-    <input type="file" id="csvFile" accept=".csv" style="margin-top: 15px;">
-    <button id="importarBtn">Importar CSV</button>
-    <button id="exportarBtn" style="margin-top: 15px; background:#f39c12; color:white; margin-left:8px;">Exportar para CSV</button>
-    <button onclick="window.location.href='turmas.html'" style="margin-top: 15px; background:#718093; color:white; margin-left:8px;">Voltar para Turmas</button>
+    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px;">
+      <button id="toggleNotasGeraisBtn" style="flex: 0 0 auto; min-width: 200px; background: linear-gradient(135deg, #2980b9 0%, #1a5a7a 100%);">Lançar/Editar Notas</button>
+      <button id="saveNotasBtn" style="flex: 0 0 auto; min-width: 140px; background: linear-gradient(135deg, #27ae60 0%, #1e8449 100%); display:none;">Salvar Notas</button>
+      <button id="cancelNotasBtn" style="flex: 0 0 auto; min-width: 140px; background: linear-gradient(135deg, #c0392b 0%, #a93226 100%); display:none;">Cancelar</button>
+      <button onclick="window.location.href='turmas.html'" style="flex: 0 0 auto; min-width: 140px; background: linear-gradient(135deg, #718093 0%, #566573 100%);">Voltar para Turmas</button>
+    </div>
 
-  <button id="toggleNotasGeraisBtn" style="margin-top: 15px; background:#2980b9; color:white; margin-left:8px;">Lançar/Editar Notas (geral)</button>
-  <button id="saveNotasBtn" style="margin-top: 15px; background:#27ae60; color:white; margin-left:8px; display:none;">Salvar Notas</button>
-  <button id="cancelNotasBtn" style="margin-top: 15px; background:#c0392b; color:white; margin-left:8px; display:none;">Cancelar</button>
-
-    <table id="alunosTable" border="1" style="margin-top:20px; width:100%; border-collapse:collapse;">
+    <table id="alunosTable">
       <thead>
         <tr>
           <th>Matrícula</th>
           <th>Nome</th>
-          <th>Turma</th>
           <th>Ações</th>
         </tr>
       </thead>
